@@ -6,7 +6,11 @@ from pyautogui import hotkey
 from gtts import gTTS 
 from playsound import playsound
 import time
+from dotenv import load_dotenv
 
+
+load_dotenv()
+token = os.getenv("Ethan")
 timeout = 1
 connection = False
 def wifi_check():
@@ -45,4 +49,4 @@ class MyClient(discord.Client):
 intents = discord.Intents.default()
 intents.message_content = True
 client = MyClient(intents=intents)
-client.run('MTIxMzA4MDI4NTM2NTgwMTAyMA.GOIiO7.E3dk6vx6xcVwlUUVUjfqxRiLQd8MQODZPBKGQA')
+client.run(str(token))
