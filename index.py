@@ -41,8 +41,9 @@ class MyClient(discord.Client):
 
         if f'{message.content}' == 'upd':
             os.startfile(str(path))
+            return("update")
 
-        
+
         def Minimise():
             hotkey('win', 'd')
         def Playsound():
