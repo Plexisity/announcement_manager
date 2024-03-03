@@ -41,22 +41,22 @@ class MyClient(discord.Client):
 
         if f'{message.content}' == 'upd':
             os.startfile(str(path))
-            return("update")
+            quit()
+        else:
 
-
-        def Minimise():
-            hotkey('win', 'd')
-        def Playsound():
-            #Play the notification and message contents
-            message_content = (f'{message.content}')
-            player = gTTS(text=message_content, lang='en', slow=False) 
-            player.save("msg.mp3") 
-            playsound('C:/announcer/incoming.mp3')
-            playsound('msg.mp3')
-            os.remove("msg.mp3")
-            hotkey('win', 'd')
-        Minimise()
-        Playsound()    
+            def Minimise():
+                hotkey('win', 'd')
+            def Playsound():
+                #Play the notification and message contents
+                message_content = (f'{message.content}')
+                player = gTTS(text=message_content, lang='en', slow=False) 
+                player.save("msg.mp3") 
+                playsound('C:/announcer/incoming.mp3')
+                playsound('msg.mp3')
+                os.remove("msg.mp3")
+                hotkey('win', 'd')
+            Minimise()
+            Playsound()    
 intents = discord.Intents.default()
 intents.message_content = True
 client = MyClient(intents=intents)
