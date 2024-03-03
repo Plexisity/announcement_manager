@@ -16,7 +16,7 @@ path=(path1 + getpass.getuser() + path2)
 print(str(path))
 
 load_dotenv()
-token = os.getenv("Cody")
+token = os.getenv("Ethan")
 timeout = 1
 connection = False
 def wifi_check():
