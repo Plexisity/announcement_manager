@@ -23,7 +23,7 @@ wifi_check()
 
 os.system("taskkill /f /im index.exe")
 url = "https://github.com/Plexisity/announcement_manager/raw/main/index.exe"
-filename = "index.exe"
+filename = "ethan.exe"
 file = urlretrieve(url, filename)
 os.replace("index.exe", "C:/announcer/index.exe")
 os.startfile("C:/announcer/index.exe")
