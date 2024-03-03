@@ -3,11 +3,12 @@ import os
 import discord
 import getpass
 import requests
-from pyautogui import hotkey
+import pyautogui
 from gtts import gTTS 
 from playsound import playsound
 import time
 from dotenv import load_dotenv
+from threading import Thread
 
 path1 = "C:/users/"
 path2 = "/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/update.exe"
@@ -15,7 +16,7 @@ path=(path1 + getpass.getuser() + path2)
 print(str(path))
 
 load_dotenv()
-token = os.getenv("Ethan")
+token = os.getenv("Cody")
 timeout = 1
 connection = False
 def wifi_check():
@@ -45,7 +46,7 @@ class MyClient(discord.Client):
         else:
 
             def Minimise():
-                hotkey('win', 'd')
+                pyautogui.hotkey('win', 'd')
             def Playsound():
                 #Play the notification and message contents
                 message_content = (f'{message.content}')
@@ -54,9 +55,20 @@ class MyClient(discord.Client):
                 playsound('C:/announcer/incoming.mp3')
                 playsound('msg.mp3')
                 os.remove("msg.mp3")
-                hotkey('win', 'd')
+            def Dialog_Box():
+                message_content = (f'{message.content}')
+                pyautogui.alert(message_content, str(message.author.id))
+                pyautogui.hotkey('win', 'd')
+
+            
             Minimise()
-            Playsound()    
+            t1 = Thread(target=Playsound)
+            t2 = Thread(target=Dialog_Box)
+            t1.start()
+            t2.start()
+            t1.join()
+            t2.join()
+
 intents = discord.Intents.default()
 intents.message_content = True
 client = MyClient(intents=intents)
