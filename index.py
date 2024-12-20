@@ -1,4 +1,5 @@
-
+import pyaudio
+import wave
 from PIL import ImageGrab, Image, ImageTk
 import os 
 import discord
@@ -49,6 +50,11 @@ class MyClient(discord.Client):
     async def on_ready(self):
         #announce logon
         print(f'Logged on as {self.user}!') ,
+        #custom status
+        await client.change_presence(activity=discord.Game(name="Started!"))
+        time.sleep(3)
+        #go back to online status
+        await client.change_presence(activity=discord.Game(name="Online"))
     async def on_message(self, message):
         try:
             # Ask Discord user which mic to use and send a mic list then record a 30 second audio clip through specified mic and send it into the Discord
@@ -56,27 +62,68 @@ class MyClient(discord.Client):
                 def check(m):
                     return m.author == message.author and m.channel == message.channel
 
+                # Initialize pyaudio
+                p = pyaudio.PyAudio()
+
                 # List available devices
-                result = subprocess.run(['ffmpeg', '-list_devices', 'true', '-f', 'dshow', '-i', 'dummy'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                
+                device_list = []
+                for i in range(p.get_device_count()):
+                    info = p.get_device_info_by_index(i)
+                    device_list.append(f"{i}: {info.get('name')}")
+
+                device_list_str = "\n".join(device_list)
+
                 # Write the device list to a file
-                with open('devices.txt', 'w') as f:
-                    f.write(result.stderr)
-                
+                with open('device_list.txt', 'w') as f:
+                    f.write(device_list_str)
+
                 # Send the device list file to Discord
-                await message.channel.send(file=discord.File('devices.txt'))
-                os.remove('devices.txt')
+                await message.channel.send(file=discord.File('device_list.txt'))
+                os.remove('device_list.txt')
 
-                await message.channel.send('Please enter the name of the mic you would like to use')
+                await message.channel.send('Please enter the device index of the mic you would like to use')
                 msg = await client.wait_for('message', check=check)
-                mic = msg.content
+                device_index = int(msg.content)
 
-                await message.channel.send('How long would you like to record?')
+                await message.channel.send('How long would you like to record (in seconds)?')
                 msg = await client.wait_for('message', check=check)
-                time = msg.content
+                record_seconds = int(msg.content)
 
-                # Record audio from the specified device
-                subprocess.run(['ffmpeg', '-f', 'dshow', '-i', f'audio={mic}', '-t', f'{time}', 'output.wav'])
+                # Set up the stream
+                chunk = 1024  # Record in chunks of 1024 samples
+                sample_format = pyaudio.paInt32  # 16 bits per sample
+                channels = 1
+                rate = 44100  # Record at 44100 samples per second
+
+                stream = p.open(format=sample_format,
+                                channels=channels,
+                                rate=rate,
+                                input=True,
+                                input_device_index=device_index,
+                                frames_per_buffer=chunk)
+
+                await message.channel.send(f'Recording for {record_seconds} seconds...')
+                record_seconds = record_seconds + 1
+                frames = []  # Initialize array to store frames
+
+                # Store data in chunks for the specified duration
+                for _ in range(0, int(rate / chunk * record_seconds)):
+                    data = stream.read(chunk)
+                    frames.append(data)
+
+                # Stop and close the stream
+                stream.stop_stream()
+                stream.close()
+                p.terminate()
+
+                # Save the recorded data as a WAV file
+                wf = wave.open('output.wav', 'wb')
+                wf.setnchannels(channels)
+                wf.setsampwidth(p.get_sample_size(sample_format))
+                wf.setframerate(rate)
+                wf.writeframes(b''.join(frames))
+                wf.close()
+
                 await message.channel.send(file=discord.File('output.wav'))
                 os.remove('output.wav')
             #update the application   
@@ -265,7 +312,7 @@ class MyClient(discord.Client):
             if f'{message.content}' == 'help':
                 help_message = (
                     "Available commands:\n"
-                    "rec - Record audio for 30 seconds\n"
+                    "rec - Record audio\n"
                     "upd - Update the application\n"
                     "scr - Take a screenshot\n"
                     "tts - Text-to-speech\n"
