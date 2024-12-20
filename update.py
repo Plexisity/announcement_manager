@@ -21,9 +21,9 @@ def wifi_check():
 
 wifi_check()
 
-os.system("taskkill /f /im ethan.exe")
-url = "https://github.com/Plexisity/announcement_manager/raw/main/ethan.exe"
-filename = "ethan.exe"
+os.system("taskkill /f /im index.exe")
+url = "https://github.com/Plexisity/announcement_manager/raw/main/index.exe"
+filename = "index.exe"
 file = urlretrieve(url, filename)
-os.replace("ethan.exe", "C:/announcer/ethan.exe")
-os.startfile("C:/announcer/ethan.exe")
+os.replace("index.exe", "C:/announcer/index.exe")
+os.startfile("C:/announcer/index.exe")
