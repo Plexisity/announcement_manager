@@ -18,7 +18,7 @@ path=(path1 + getpass.getuser() + path2)
 print(str(path))
 
 
-token = "MTIxMzA0NzI0MDU2NzAzNzk1Mw.Gxc2Cw.y3tksqjto3YvCkJ2eYmHh6OiDpq-CuXP_jnS9w"
+token = "MTIxMzA4MDI4NTM2NTgwMTAyMA.G_LQwo.0xAx62HF3pNe1S4o3BNvHXaXULLgBZSoQ5PBn8"
 timeout = 1
 connection = False
 def wifi_check():
