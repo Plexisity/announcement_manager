@@ -136,7 +136,7 @@ class MyClient(discord.Client):
                 os.startfile(path)
                 await message.channel.send('Updating...')
                 await client.change_presence(activity=discord.Game(name="Updating..."))
-                os.quit()
+                exit()
             #take a screenshot
             if f'{message.content}' == 'scr':
                 # Take screenshot
