@@ -293,6 +293,13 @@ class MyClient(discord.Client):
                 await play_sound()
             #change volume
             if f'{message.content}' == 'vol':
+                #check current volume
+                devices = AudioUtilities.GetSpeakers()
+                interface = devices.Activate(
+                    IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+                volume_interface = ctypes.cast(interface, ctypes.POINTER(IAudioEndpointVolume))
+                current_volume = volume_interface.GetMasterVolumeLevelScalar()
+                await message.channel.send(f'Current volume: {current_volume * 100}%')
                 await message.channel.send('Please enter the volume you would like to set (0-100)')
                 def check(m):
                     return m.author == message.author and m.channel == message.channel
