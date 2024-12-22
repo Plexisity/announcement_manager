@@ -14,7 +14,7 @@ connection = False
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 channel_id = 1319761582145798194  # Replace with your channel ID
-token = os.getenv("Cody")  # Replace with your token
+token = os.getenv("Ethan")  # Replace with your token
 
 def wifi_check():
     global connection

